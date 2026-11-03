@@ -1,0 +1,23 @@
+员工月奖系统 0.7.8 更新说明（2026-10-29）
+
+本次修改
+导出汇总表中“声入浙心”的备注统一改为黑色，公式版和数值版均生效。
+该行默认说明、手动填写备注及会议追加原因都采用黑色。其他字体样式和金额计算保持原有规则。
+包含0.7.7多人自动同步、0.7.6材料目录命名和员工退回提醒等此前更新，无需逐个安装旧包。
+
+公司Mac一键更新
+将“员工月奖系统_备注黑字及自动同步更新包_0.7.8_20261029.zip”放到Mac桌面。
+在无人申报的时段，于Mac终端复制执行以下整段：
+
+scp "$HOME/Desktop/员工月奖系统_备注黑字及自动同步更新包_0.7.8_20261029.zip" awardadmin@<SERVER_IP>:~/monthly-award-update-078.zip && \
+ssh -t awardadmin@<SERVER_IP> 'set -e; stage=$(mktemp -d "$HOME/monthly-award-update-078.XXXXXX"); /opt/monthly-award/.venv/bin/python -m zipfile -e "$HOME/monthly-award-update-078.zip" "$stage"; cd "$stage/员工月奖系统"; sudo bash infra/upgrade_vm_update_20261029_remark.sh'
+
+脚本先校验、备份程序配置和数据库，再更新服务并检查版本0.7.8。
+安装后强制刷新浏览器一次，并重新导出需要保存的汇总表。
+已下载的旧Excel及历史归档文件不会自动变色；重新生成的导出文件才会显示黑色备注。
+
+验收
+重新导出公式版和数值版，检查“声入浙心”的备注为黑色，应发绿色、实发红色保持原样。
+
+本次仅在本机验证，未连接或更新公司虚拟机。
+更新包不含业务数据库、上传材料或账号口令。

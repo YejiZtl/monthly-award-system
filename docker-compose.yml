@@ -1,0 +1,93 @@
+name: monthly-award-system
+
+x-backend-environment: &backend-environment
+  APP_ENV: ${APP_ENV:-development}
+  DATABASE_PATH: /data/monthly_award.sqlite3
+  UPLOAD_ROOT: /data/uploads
+  EXPORT_ROOT: /data/exports
+  TEMPLATE_PATH: /app/templates/excel/monthly_award_official_v2026_07.xlsx
+  STANDARD_TEMPLATE_PATH: /app/templates/excel/monthly_award_standard_2026_10.xlsx
+  RULE_VERSION: ${RULE_VERSION:-RV-2026.08}
+  TEMPLATE_VERSION: ${TEMPLATE_VERSION:-TMPL-2026.07}
+  INLINE_WORKER: "false"
+  LLM_PROVIDER: ${LLM_PROVIDER:-bigmodel}
+  LLM_BASE_URL: ${LLM_BASE_URL:-https://open.bigmodel.cn/api/paas/v4/chat/completions}
+  ZAI_API_KEY: ${ZAI_API_KEY:-}
+  LLM_API_KEY: ${LLM_API_KEY:-}
+  LLM_MODEL: ${LLM_MODEL:-glm-4.6v-flash}
+  LLM_TEMPERATURE: ${LLM_TEMPERATURE:-0.1}
+  LLM_ENABLE_THINKING: ${LLM_ENABLE_THINKING:-false}
+  LLM_TIMEOUT_SECONDS: ${LLM_TIMEOUT_SECONDS:-120}
+  LLM_MAX_ATTEMPTS: ${LLM_MAX_ATTEMPTS:-3}
+  LLM_IMAGE_MAX_EDGE: ${LLM_IMAGE_MAX_EDGE:-2200}
+  LLM_IMAGE_QUALITY: ${LLM_IMAGE_QUALITY:-92}
+  PROMPT_VERSION: ${PROMPT_VERSION:-PROMPT-2026.08}
+  REVIEWER_TOKEN: ${REVIEWER_TOKEN:-}
+  ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
+  ADMIN_SESSION_SECRET: ${ADMIN_SESSION_SECRET:-}
+
+x-backend-service: &backend-service
+  build:
+    context: .
+    dockerfile: backend/Dockerfile
+  env_file:
+    - path: .env
+      required: false
+  environment: *backend-environment
+  volumes:
+    - monthly_award_data:/data
+  restart: unless-stopped
+
+services:
+  backend:
+    <<: *backend-service
+
+  worker:
+    <<: *backend-service
+    command: ["python", "-m", "app.worker.main"]
+    healthcheck:
+      disable: true
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  backup:
+    <<: *backend-service
+    command:
+      - python
+      - /app/infra/backup.py
+      - --database
+      - /data/monthly_award.sqlite3
+      - --uploads
+      - /data/uploads
+      - --exports
+      - /data/exports
+      - --destination
+      - /backups
+      - --retention
+      - "7"
+      - --interval-seconds
+      - "86400"
+    healthcheck:
+      disable: true
+    volumes:
+      - monthly_award_data:/data
+      - monthly_award_backups:/backups
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  web:
+    build:
+      context: .
+      dockerfile: infra/frontend.Dockerfile
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "4173:80"
+    restart: unless-stopped
+
+volumes:
+  monthly_award_data:
+  monthly_award_backups:

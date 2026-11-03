@@ -1,0 +1,154 @@
+/* Taste: framed-sheet, seed 1711064279. 228px nav + flexible sheet + 8px outer inset.
+   Chinese system type is retained for offline company computers; no remote font dependency. */
+:root { --ink:#172b38; --muted:#52616a; --line:#e4e9eb; --navy:#203d4c; --teal:#176f73; }
+body { background:#f1f5f6; color:var(--ink); font-size:14px; }
+.app-shell { grid-template-columns:228px minmax(0,1fr); }
+.sidebar { background:#f1f5f6; color:var(--ink); width:228px; padding:24px 14px; border:0; }
+.brand { color:var(--ink); margin-bottom:28px; }
+.brand-mark { background:#176f73; box-shadow:none; border-radius:8px; }
+.brand small,.nav-caption { color:#52616a; letter-spacing:0; font-size:12px; }
+.primary-nav button,.admin-link { color:#344852; min-height:44px; border-radius:6px; font-size:14px; }
+.primary-nav button:hover,.admin-link:hover { background:#e6ecee; color:var(--ink); }
+.primary-nav button.active,.admin-link.active { background:#dfe7e9; color:#142f3e; box-shadow:none; }
+.nav-icon,.primary-nav button.active .nav-icon { border:0; background:transparent; color:#52616a; font-size:14px; }
+.primary-nav em { background:#deeaeb; color:#244c51; }
+.topbar { background:#f1f5f6; border:0; height:56px; padding:0 24px; backdrop-filter:none; }
+.topbar-title,.topbar-title p,.user-chip small { color:#52616a; font-size:12px; }
+.page-wrap { width:auto; min-height:calc(100vh - 64px); margin:0 8px 8px 0; padding:24px; border:1px solid #e4e9eb; border-radius:16px; background:white; }
+h1 { font-size:26px; letter-spacing:0; }
+.subtitle { font-size:14px; color:#52616a; }
+.primary-button { background:#203d4c; box-shadow:none; border-radius:6px; font-size:14px; }
+.secondary-button { background:white; color:#304650; box-shadow:none; border-radius:6px; font-size:14px; }
+.primary-button:hover,.secondary-button:hover { transform:none; }
+.form-card,.aside-card,.table-card,.approval-list,.approval-detail,.metric-card,.export-hero { box-shadow:none; border-color:#e4e9eb; }
+.metric-icon { display:none; }
+.metric-card { background:transparent; border:0; border-radius:0; }
+.metrics-grid { border-block:1px solid #e4e9eb; gap:16px; }
+.golden-result,.export-hero { background:#f1f5f6; color:var(--ink); }
+.golden-result strong,.export-hero strong { color:#176f73; font-size:30px; }
+.review-stage-note { padding:16px; background:#edf5f4; color:#244f48; line-height:1.7; }
+.approval-layout { grid-template-columns:minmax(250px,320px) minmax(0,1fr); gap:16px; }
+.approval-list-item .approval-type { display:none; }
+.approval-list-item { grid-template-columns:minmax(0,1fr) auto; }
+.approval-list-item.selected { background:#edf2f3; box-shadow:none; }
+.meeting-toolbar { display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:20px; }
+.meeting-toolbar label { display:flex; align-items:center; gap:10px; font-size:14px; }
+.meeting-toolbar input { width:168px; min-height:36px; }
+#meeting-status { color:#52616a; margin-right:auto; }
+.meeting-sheet-heading { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:16px 0; font-size:14px; }
+.meeting-sheet-heading strong { font-size:22px; color:#dc2626; font-variant-numeric:tabular-nums; }
+.meeting-totals { display:flex; flex-wrap:wrap; gap:12px 24px; }
+.meeting-table-wrap { width:100%; overflow:auto; max-height:72vh; border:1px solid #e4e9eb; border-radius:8px; }
+.meeting-table { width:100%; min-width:1440px; border-collapse:separate; border-spacing:0; font-size:14px; }
+.meeting-table th,.meeting-table td { padding:12px 10px; border-bottom:1px solid #edf0f1; vertical-align:top; text-align:left; background:#fff; line-height:1.55; }
+.meeting-table thead th { position:sticky; top:0; z-index:2; color:#52616a; font-weight:500; white-space:nowrap; border-bottom-color:#ccd6da; }
+.meeting-table th:nth-child(2) { min-width:160px; max-width:240px; position:sticky; left:0; z-index:1; font-weight:600; }
+.meeting-table thead th:nth-child(2) { z-index:3; }
+.meeting-table td.num,.meeting-table th.num { text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; min-width:84px; }
+.meeting-table .payable { font-weight:700; color:#15803d; }
+.meeting-table .actual { font-weight:700; color:#dc2626; }
+.meeting-totals strong:first-child { color:#15803d; }
+#export-summary > div:nth-child(2) strong { color:#15803d; }
+#export-summary > div:nth-child(3) strong { color:#dc2626; }
+.meeting-remark { min-width:220px; max-width:340px; overflow-wrap:anywhere; }
+.meeting-table tfoot th,.meeting-table tfoot td { background:#f5f8f8; font-weight:600; }
+.meeting-edit { min-width:100px; }
+.text-action { display:block; border:0; background:none; color:#17646d; font:inherit; padding:2px 0; cursor:pointer; text-align:left; white-space:nowrap; text-decoration:underline; text-underline-offset:3px; }
+.text-action + .text-action { margin-top:8px; }
+.missing { color:#65747b; }
+.meeting-notes { margin-top:24px; }
+.meeting-notes summary { cursor:pointer; font-weight:600; padding:12px 0; }
+.meeting-notes .form-card { border:0; padding:16px 0; }
+.meeting-evidence-dialog { width:96vw; max-width:1600px; height:94vh; padding:0; border:1px solid #d3dde1; border-radius:10px; }
+.meeting-evidence-dialog[open] { display:flex; flex-direction:column; }
+.meeting-evidence-dialog header { display:flex; gap:16px; align-items:center; justify-content:space-between; padding:14px 20px; border-bottom:1px solid #e4e9eb; }
+.meeting-evidence-dialog h2 { margin:0; font-size:18px; }
+.meeting-evidence-dialog iframe { flex:1; width:100%; border:0; min-height:0; }
+dialog::backdrop { background:#14273188; backdrop-filter:none; }
+#meeting-cells-form label { display:block; margin-top:14px; }
+#meeting-cells-form p { color:#52616a; line-height:1.6; font-size:13px; }
+.projection-mode .sidebar,.projection-mode .topbar { display:none; }
+.projection-mode .app-shell { display:block; }
+.projection-mode .page-wrap { margin:0; padding:24px; border:0; border-radius:0; }
+.projection-mode .meeting-table { font-size:18px; min-width:1700px; }
+.projection-mode .meeting-table-wrap { max-height:78vh; }
+.projection-mode h1 { font-size:32px; }
+.projection-mode .meeting-sheet-heading strong { font-size:28px; }
+.projection-mode .subtitle { display:none; }
+.projection-mode .meeting-owner { display:none; }
+.projection-mode .meeting-notes { display:none; }
+:focus-visible { outline:3px solid #176f73; outline-offset:3px; }
+@media(max-width:1100px) {
+ .app-shell { display:block; }.sidebar { position:static; width:100%; min-height:0; height:auto; padding:12px 16px; }
+ .brand { margin:0 0 10px; }.brand small,.nav-caption,.sidebar-foot { display:none; }
+ .primary-nav { flex-direction:row; overflow:auto; }.primary-nav button { width:auto; flex-shrink:0; display:flex; gap:5px; padding:8px 12px; }.nav-icon { display:none; }
+ .topbar { position:static; padding:8px 16px; height:auto; min-height:48px; }.topbar-title p,.user-chip { display:none; }
+ .page-wrap { margin:0; padding:20px; border-radius:0; }.approval-layout { grid-template-columns:1fr; }
+ .meeting-toolbar { gap:8px; }#approve-meeting { margin-left:0; }.meeting-sheet-heading { align-items:flex-start; flex-direction:column; }
+}
+@media(max-width:600px) {
+ .page-wrap { padding:16px; }.primary-nav button { min-height:44px; }.topbar-actions { gap:8px; }h1 { font-size:22px; }
+ .page-title-row { align-items:flex-start; gap:12px; }.meeting-toolbar label { flex:1; }#meeting-status { width:100%; }
+ .meeting-table-wrap { max-height:65vh; }.meeting-evidence-dialog header { padding:12px; flex-wrap:wrap; }
+ .meeting-evidence-dialog { width:100vw; height:96dvh; }.meeting-sheet-heading strong { font-size:20px; }
+ .text-action { min-height:40px; }.projection-mode .page-wrap { padding:12px; }
+}
+
+/* Meeting refinement: compact notes and an always visible action column. */
+body,button,input,select,textarea { font-family:"Microsoft YaHei","PingFang SC",-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif; }
+body { font-size:15px; }
+.primary-nav button,.admin-link { font-size:16px; }
+.topbar-title,.topbar-title p,.user-chip small,.brand small,.nav-caption { font-size:13px; }
+.subtitle,.primary-button,.secondary-button,.meeting-toolbar label,.meeting-sheet-heading { font-size:15px; }
+.meeting-table { font-size:15px; min-width:1360px; }
+.meeting-table .meeting-edit { position:sticky; right:0; z-index:2; min-width:110px; border-left:1px solid #d6e0e3; background:#f6f9fa; }
+.meeting-table thead .meeting-edit { z-index:4; }
+.meeting-remark { min-width:170px; max-width:210px; }
+.meeting-remark summary { cursor:pointer; color:#17646d; }
+.meeting-remark summary span { display:inline-block; max-width:145px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; vertical-align:bottom; }
+.meeting-remark details[open] { min-width:300px; }
+.meeting-remark details[open] summary span { max-width:280px; }
+.meeting-note-editor { padding-top:12px; }
+.meeting-note-editor label { display:block; font-size:14px; margin-bottom:12px; }
+.meeting-note-editor textarea { display:block; width:100%; min-height:100px; resize:vertical; font-size:15px; line-height:1.6; }
+.reviewer-login-dialog h2 { width:auto; max-width:none; white-space:normal; font-size:21px; }
+#final-amount-dialog .reviewer-login-heading { display:block; padding:20px 24px 12px; }
+#final-amount-dialog .reviewer-login-heading h2 { margin:0; }
+.reviewer-login-dialog label span,#meeting-cells-form p { font-size:14px; }
+.reviewer-login-dialog input { font-size:16px; }
+.projection-mode .meeting-table { min-width:1500px; }
+
+/* Audit values and expressions remain legible at normal office display zoom. */
+.field-row.key-audit-field .field-label,.review-field-summary > div.key-audit-field span { font-size:16px; line-height:1.5; }
+.field-row.key-audit-field input,.review-field-summary > div.key-audit-field b { font-size:20px; line-height:1.5; }
+.review-field-summary > div { min-width:0; }
+.review-field-summary > div b { overflow-wrap:anywhere; }
+.golden-result > div:first-child { background:#203d4c; }
+.golden-result > div:first-child strong { color:#8ff0c0; font-size:34px; }
+.golden-result > div:first-child p,.golden-result > div:first-child span { color:#d9e7e9; font-size:14px; line-height:1.6; }
+.formula-stack p { grid-template-columns:minmax(0,1fr) auto; gap:6px 14px; font-size:15px; line-height:1.7; }
+.formula-stack span { grid-column:1 / -1; color:#52616a; }
+.formula-stack b { font-family:inherit; font-weight:500; overflow-wrap:anywhere; white-space:normal; }
+.formula-stack em { align-self:end; font-variant-numeric:tabular-nums; }
+.approval-select-row { display:flex; align-items:center; }
+.approval-select-row > input { flex:none; width:18px; height:18px; margin:16px 0 16px 12px; }
+.approval-select-row .approval-list-item { flex:1; min-width:0; }
+.secondary-batch-tools { padding:14px; border-bottom:1px solid var(--line); }
+.secondary-batch-tools label { display:flex; align-items:center; gap:8px; }
+.secondary-batch-tools input { width:18px; height:18px; }
+.secondary-batch-tools > span { display:block; margin:10px 0; color:var(--muted); }
+#secondary-batch-result { font-size:14px; white-space:pre-wrap; overflow-wrap:anywhere; line-height:1.6; }
+
+#supplemental-row-form { padding:24px; }
+#supplemental-row-form h2 { margin:0 0 12px; }
+#supplemental-row-form label { display:block; margin:14px 0; }
+#supplemental-row-form textarea { display:block; width:100%; min-height:100px; font-size:16px; }
+#supplemental-row-form p { line-height:1.65; font-size:14px; color:var(--muted); }
+#supplemental-files-dialog { padding:24px; }
+#supplemental-files-list .text-action { white-space:normal; overflow-wrap:anywhere; }
+.meeting-attachments { min-width:150px; max-width:230px; overflow-wrap:anywhere; }
+.meeting-attachments > div + div { margin-top:10px; }
+.meeting-file-actions { display:flex; gap:16px; }
+.meeting-file-actions .text-action + .text-action { margin-top:0; }
+
+.meeting-table tr.meeting-supplemental > td, .meeting-table tr.meeting-supplemental > th { background:#fff2cc; }

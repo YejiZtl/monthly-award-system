@@ -1,0 +1,10 @@
+packages:
+  - "."
+
+# These packages publish usable prebuilt binaries for this project. Their
+# optional install hooks are intentionally not executed on the local server.
+allowBuilds:
+  esbuild: false
+  sharp: false
+  unrs-resolver: false
+  workerd: false

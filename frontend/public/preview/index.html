@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>员工月奖自动核算系统 · 开始申报</title>
+    <link rel="stylesheet" href="../app/globals.css?v=20261029-review" />
+    <link rel="stylesheet" href="./meeting.css?v=20261029-meeting" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <button class="brand" data-nav="new" aria-label="开始申报">
+          <span class="brand-mark">奖</span><span><strong>月奖核算</strong><small>MONTHLY AWARD</small></span>
+        </button>
+        <nav class="primary-nav" aria-label="主导航">
+          <p class="nav-caption">业务处理</p>
+          <button data-nav="dashboard" data-reviewer-only><span class="nav-icon">总</span><span>工作台</span></button>
+          <button class="active" data-nav="new"><span class="nav-icon">新</span><span id="submission-nav-label">工作台</span><em id="review-badge" hidden aria-live="polite">0</em></button>
+          <button data-nav="approval" data-reviewer-only><span class="nav-icon">审</span><span>初审</span><em id="approval-badge" hidden>0</em></button>
+          <button data-nav="secondary" data-reviewer-only><span class="nav-icon">复</span><span>复审</span><em id="secondary-badge" hidden>0</em></button>
+          <button data-nav="meeting" data-reviewer-only><span class="nav-icon">会</span><span>终审</span></button>
+          <button data-nav="exports" data-reviewer-only><span class="nav-icon">出</span><span>导出</span></button>
+        </nav>
+        <div class="sidebar-foot">
+          <button class="admin-link" data-nav="admin" data-reviewer-only><span class="nav-icon">管</span><span>系统状态</span></button>
+        </div>
+      </aside>
+
+      <main class="main-area">
+        <header class="topbar">
+          <div class="topbar-title"><p>员工月奖自动核算系统</p><span>/</span><b id="topbar-view-title">开始申报</b></div>
+          <div class="topbar-actions"><span id="connection-status" role="status">连接中…</span><button class="secondary-button" type="button" data-action="reconnect">重试连接</button>
+            <button class="reviewer-entry-button" type="button" data-action="reviewer-login" data-employee-only><span>审</span><b>审核员入口</b></button>
+            <button class="user-chip" data-action="profile" data-reviewer-only><span class="avatar">审</span><span><b>审核员</b><small id="auth-state">开发环境</small></span><i>⌄</i></button>
+          </div>
+        </header>
+
+        <div class="page-wrap">
+          <div class="view-panel" data-view="new">
+            <section class="page-title-row">
+              <div><p class="eyebrow">结算申报</p><h1>开始申报</h1><p class="subtitle">填写本次结算信息，上传真实业务表单后自动进入字段核对。</p></div>
+              <span class="status-tag status-success">可申报</span>
+            </section>
+            <div class="mini-steps" id="new-steps" aria-label="结算进度">
+              <div class="mini-step is-active"><span>1</span><div><b>填写信息</b><small>进行中</small></div></div>
+              <div class="mini-step"><span>2</span><div><b>上传与识别</b><small>待开始</small></div></div>
+              <div class="mini-step"><span>3</span><div><b>字段核对</b><small>待开始</small></div></div>
+              <div class="mini-step"><span>4</span><div><b>审核导出</b><small>待开始</small></div></div>
+            </div>
+            <div class="form-layout">
+              <section class="form-card">
+                <div class="section-number"><span>01</span><div><h3>批次基本信息</h3><p>用于归集同一月份、同一类型的一次申报。</p></div></div>
+                <div class="form-grid">
+                  <label><span>结算月份 <em>*</em></span><input id="settlement-month" type="month" required /></label>
+                  <label><span>项目负责人 <small>（选填，可为空）</small></span><input id="project-owner" type="text" placeholder="由申报人填写" maxlength="80" autocomplete="off" /></label>
+                  <label><span>业务类别 <em>*</em></span><select id="business-category" required></select></label>
+                  <label><span>表格类型 <em>*</em></span><select id="form-type" required></select></label>
+                </div>
+                <p><a id="standard-template-download" class="secondary-button" hidden>下载标准模板</a> <a class="secondary-button" href="/api/v1/evidence-templates/download">下载证明材料模板</a></p><p id="upload-context" role="status" hidden></p><p id="upload-error" class="upload-error" role="alert" hidden></p>
+                <p>下载当前所选表单的独立空白模板，填写本月实际数据；收费标准和计算公式已保留。</p>
+                <div class="section-divider"></div>
+                <div class="section-number"><span>02</span><div><h3>上传申报材料</h3><p>每次上传一份与所选表单对应的 Excel 主表；证明附件可上传多份。</p></div></div>
+                <div class="upload-kind-grid">
+                  <section class="upload-kind-card">
+                    <div class="upload-kind-heading"><span>主材料</span><b>必填</b></div>
+                    <button class="upload-zone compact-upload-zone" id="material-upload-zone" type="button">
+                      <span class="upload-icon">表</span><strong>标准 Excel 表格</strong>
+                      <p>支持 XLSX · 单文件不超过 10MB</p><em>选择申报材料</em>
+                    </button>
+                    <input id="material-file-input" type="file" accept=".xlsx" hidden />
+                    <div id="selected-material-files" class="selected-files" hidden></div>
+                  </section>
+                  <section class="upload-kind-card">
+                    <div class="upload-kind-heading"><span>证明附件</span><small>选填</small></div>
+                    <button class="upload-zone compact-upload-zone evidence-upload-zone" id="evidence-upload-zone" type="button">
+                      <span class="upload-icon">证</span><strong>补充图片证明</strong>
+                      <p>支持 PNG、JPG，可上传多张</p><em>选择证明附件</em>
+                    </button>
+                    <input id="evidence-file-input" type="file" accept=".jpg,.jpeg,.png" multiple hidden />
+                    <div id="selected-evidence-files" class="selected-files" hidden></div>
+                  </section>
+                </div>
+                <div class="form-actions">
+                  <p><span>i</span>证明附件仅用于审核查看，不参与字段识别和奖金核算。</p>
+                  <button class="primary-button" id="start-upload" disabled>上传并开始核对 <span>→</span></button>
+                </div>
+              </section>
+              <aside class="form-aside">
+                <div class="aside-card batch-summary">
+                  <p class="eyebrow">本次申报</p><h3 id="batch-month-preview">请选择结算月份</h3>
+                  <dl><div><dt>批次号</dt><dd id="batch-no-preview">上传后自动生成</dd></div><div><dt>项目负责人</dt><dd id="owner-preview">未填写</dd></div><div><dt>表格类型</dt><dd id="form-preview">加载中</dd></div><div><dt>规则版本</dt><dd id="rule-version-preview">加载中</dd></div></dl>
+                </div>
+                <div class="aside-card"><p class="eyebrow">上传范围</p><ul class="check-list"><li>主材料：标准 XLSX 表格</li><li>证明附件：PNG、JPG</li></ul></div>
+              </aside>
+            </div>
+          </div>
+
+          <section class="form-card" id="employee-submissions"><div class="card-heading"><h3>我的申报记录</h3><button class="secondary-button" type="button" data-action="refresh-data">刷新记录</button></div><p>待初审时可撤回修改；初审退回的材料可继续核对。已进入复审或终审的原材料保持锁定。</p><div id="submission-items"></div></section><div class="view-panel" data-view="review" hidden>
+            <section class="page-title-row compact-title">
+              <div><div class="title-with-back"><button data-return-upload type="button" aria-label="返回首页重新上传表单或附件">← 返回上传</button><p class="eyebrow" id="review-batch-no">批次</p></div><h1>申报字段核对</h1><p class="subtitle">请对照左侧真实原件逐项核对；低于 90% 的字段会标为橙色。</p></div>
+              <span class="status-tag status-warning" id="review-status">待校对</span>
+            </section>
+            <div class="mini-steps" aria-label="结算进度">
+              <div class="mini-step is-active"><span>✓</span><div><b>填写信息</b><small>已完成</small></div></div>
+              <div class="mini-step is-active"><span>✓</span><div><b>上传与识别</b><small>已完成</small></div></div>
+              <div class="mini-step is-active"><span>3</span><div><b>字段核对</b><small>进行中</small></div></div>
+              <div class="mini-step"><span>4</span><div><b>审核导出</b><small>待开始</small></div></div>
+            </div>
+            <div class="review-grid">
+              <section class="source-card">
+                <div class="source-toolbar"><div><b>申报材料与证明</b><small id="review-document-count">0 份</small></div><span class="status-tag status-success">文件已保存</span></div>
+                <div id="review-documents" class="document-gallery"></div>
+              </section>
+              <section class="fields-card">
+                <div class="card-heading fields-heading"><div><p class="eyebrow">结构化字段</p><h3 id="field-heading">识别字段</h3></div><div class="field-heading-actions"><span id="field-confidence-summary"></span><button class="secondary-button" id="review-change-upload" type="button">返回修改上传文件</button><button class="secondary-button" id="retry-recognition">重新识别</button></div></div>
+                <div class="field-list" id="field-list"></div>
+                <div class="field-confirm"><input id="confirm-fields" type="checkbox" /><label for="confirm-fields">我已对照上传原件核对以上字段，确认内容真实准确。</label></div>
+              </section>
+            </div>
+            <section class="calculation-preview">
+              <div class="calc-heading"><div><p class="eyebrow">送审说明</p><h3>核对完成后由后端按当前规则版本计算</h3></div><span class="status-tag status-info" id="review-rule-version">规则加载中</span></div>
+              <div class="formal-process-note"><span>锁</span><p>提交时会保存已确认字段快照。员工端不写入奖金金额，审核人依据同一份原件和计算明细进行确认。</p></div>
+              <div class="calc-footer"><p>如原件识别有误，请直接修改字段后再勾选确认。</p><button class="primary-button" id="review-submit" disabled>确认字段并提交审核 <span>→</span></button></div>
+            </section>
+          </div>
+
+          <div class="view-panel" data-view="approval" hidden>
+            <section class="page-title-row"><div><h1 id="approval-heading">初审</h1><p class="subtitle" id="approval-description">核对申报材料和金额，通过后交由复审。</p></div><button class="secondary-button" data-action="refresh-data">刷新</button></section>
+            <div class="approval-layout">
+              <section class="approval-list"><div class="list-filter"><b id="approval-list-title">待初审申报</b><span>按更新时间排序</span></div><div id="secondary-batch-tools" class="secondary-batch-tools" hidden><label><input id="secondary-select-all" type="checkbox" /> 全选待复审</label><span id="secondary-selection-count">已选 0 份</span><button id="secondary-batch-confirm" class="primary-button" type="button" disabled>批量复审通过</button><p id="secondary-batch-result" role="status" aria-live="polite"></p></div><div id="approval-list-items"></div></section>
+              <section class="approval-detail" id="approval-detail" hidden>
+                <div class="approval-detail-head"><div><p class="eyebrow" id="approval-batch-id"></p><h2 id="approval-project"></h2><p id="approval-meta"></p></div><span class="status-tag status-purple" id="approval-status">待审核</span></div>
+                <div class="audit-summary"><div><small>识别字段</small><b id="approval-field-count">—</b></div><div><small>证据材料</small><b id="approval-document-count">—</b></div><div><small>规则版本</small><b id="approval-rule-version">—</b></div></div>
+                <section class="approval-source-block"><div class="source-toolbar"><div><b>申报材料</b><small>审核前请核对主材料</small></div><span class="status-tag status-success">核算依据</span></div><div id="approval-documents" class="document-gallery compact-gallery"></div></section>
+                <details class="evidence-panel" id="approval-evidence-panel"><summary><span><b>证明附件</b><small id="approval-evidence-count">0 份</small></span><em>展开逐一查看</em></summary><div id="approval-evidence-documents" class="document-gallery compact-gallery"></div></details>
+                <section class="confirmed-fields-block"><div class="card-heading"><div><p class="eyebrow">申报核对结果</p><h3>已确认字段</h3></div></div><div id="approval-fields" class="review-field-summary"></div></section>
+                <p id="initial-review-summary" class="review-stage-note" hidden></p><div class="golden-result"><div><p>系统核算奖金</p><strong id="approval-total">¥0</strong><span id="approval-rounding"></span></div><div class="formula-stack" id="approval-formulas"></div></div>
+                <label class="review-comment"><span>人工确认金额（选填）</span><input id="approval-override" inputmode="decimal" placeholder="留空则采用系统核算金额" /></label>
+                <p id="approval-standard-warnings" role="status"></p>
+                <label class="review-comment"><span>汇总表备注（立项项目修改后统一用于本月所有项目）</span><textarea id="summary-remark-text" maxlength="5000"></textarea></label>
+                <button class="secondary-button" id="save-batch-remark" type="button">保存汇总备注</button>
+                <label class="review-comment"><span>审核意见 / 退回原因</span><textarea id="review-comment" maxlength="500" placeholder="修改金额或退回时必须填写原因。"></textarea></label>
+                <p id="review-note-status" role="status"></p><button type="button" class="secondary-button" id="save-review-note">保存审核意见</button><div class="approval-actions"><button class="danger-button" data-action="return-batch">退回修改</button><button class="primary-button" id="approval-confirm">初审通过，送复审 <span>→</span></button></div>
+              </section>
+              <section class="approval-detail empty-detail" id="approval-empty"><div class="empty-state"><span>审</span><h3>暂无待审核批次</h3><p>只有完成真实上传、字段核对和系统计算的批次才会出现在这里。</p></div></section>
+            </div>
+          </div>
+
+          <div class="view-panel" data-view="meeting" hidden>
+            <section class="page-title-row"><div><h1 id="meeting-title">奖金核算表</h1><p class="subtitle">办公会议审议稿 · 修改保存后更新汇总，确认会议结果后再导出。</p></div><button class="secondary-button" id="projection-toggle" type="button">投影模式</button></section>
+            <div class="meeting-toolbar"><label>结算月份 <input id="final-review-month" type="month" /></label><button id="refresh-final-review" class="secondary-button" type="button">刷新</button><span id="meeting-status" role="status"></span><button id="add-meeting-row" class="secondary-button" type="button">新增会议条目</button><button class="primary-button" id="approve-meeting" type="button">确认会议结果，完成终审</button></div>
+            <div id="meeting-sheet" aria-live="polite"></div>
+            <details class="meeting-notes"><summary>修改汇总表备注</summary>
+            <section class="form-card"><h3>汇总表备注</h3><p>可修改固定条目及立项项目统一备注。项目备注按月份保存，统一用于本月所有1表、2表项目，包括后续新增项目。保存后会更新会议审议稿；如已确认终审，需要重新确认。</p><label>月份 <input id="remark-month" type="month" /></label> <button id="load-month-remarks" type="button" class="secondary-button">读取备注</button><div id="monthly-remarks"></div></section>
+            </details>
+          </div>
+          <div class="view-panel" data-view="exports" hidden>
+            <section class="page-title-row"><div><h1>导出与归档</h1><p class="subtitle">只导出已确认的会议结果，历史文件保留原版本。</p></div><button class="secondary-button" data-nav="meeting">返回终审表</button></section>
+            <div class="meeting-toolbar"><label>结算月份 <input id="export-month" type="month" /></label><button id="refresh-export-month" type="button" class="secondary-button">读取</button></div>
+            <section class="export-hero" id="export-summary"></section><div id="export-ready-list" class="export-grid"></div>
+            <section class="table-card export-history"><div class="card-heading table-heading"><div><p class="eyebrow">不可变版本</p><h3>历史导出</h3></div></div><div class="batch-table-wrap"><table class="batch-table"><thead><tr><th>文件 / 导出编号</th><th>结算月份</th><th>确认金额</th><th>模板版本</th><th>生成人</th><th>操作</th></tr></thead><tbody id="export-history-body"></tbody></table><div id="export-empty" class="empty-state table-empty"><span>出</span><h3>暂无导出记录</h3><p>这里不会展示任何样例或预设文件。</p></div></div></section>
+          </div>
+
+          <div class="view-panel" data-view="dashboard" hidden>
+            <section class="welcome-row"><div><p class="eyebrow" id="dashboard-month"></p><h1>月奖结算工作台</h1><p class="subtitle" id="dashboard-summary">正在读取真实业务数据。</p></div><button class="primary-button" data-nav="new"><span>＋</span> 开始申报</button></section>
+            <section class="metrics-grid">
+              <div class="metric-card"><div class="metric-icon metric-navy">批</div><div><p>本月批次</p><strong id="metric-batches">0</strong></div><span>真实创建记录</span></div>
+              <div class="metric-card"><div class="metric-icon metric-amber">核</div><div><p>待字段校对</p><strong id="metric-review">0</strong></div><span>需要申报人处理</span></div>
+              <div class="metric-card"><div class="metric-icon metric-violet">审</div><div><p>待审核确认</p><strong id="metric-approval">0</strong></div><span>需要审核人处理</span></div>
+              <div class="metric-card"><div class="metric-icon metric-green">奖</div><div><p>已确认奖金</p><strong id="metric-total">¥0</strong></div><span>来自已冻结批次</span></div>
+            </section>
+            <section class="table-card dashboard-table"><div class="card-heading table-heading"><div><p class="eyebrow">最近更新</p><h3>真实结算批次</h3></div><button data-action="refresh-data">刷新</button></div><div class="batch-table-wrap"><table class="batch-table"><thead><tr><th>批次 / 项目负责人</th><th>结算月份</th><th>表格类型</th><th>更新时间</th><th>状态</th></tr></thead><tbody id="dashboard-table-body"></tbody></table><div id="dashboard-empty" class="empty-state table-empty"><span>批</span><h3>暂无结算批次</h3><p>点击“开始申报”并上传真实文件后，这里才会产生记录。</p></div></div></section>
+          </div>
+
+          <div class="view-panel" data-view="admin" hidden>
+            <section class="page-title-row"><div><p class="eyebrow">运行信息</p><h1>系统状态</h1><p class="subtitle">以下信息直接来自当前后端，不包含预设运行记录。</p></div><span class="status-tag status-neutral" id="system-health-tag">检测中</span></section>
+            <div class="settings-grid">
+              <section class="settings-card"><div class="settings-icon">服</div><h3>后端服务</h3><p>正式业务 API 的连接与运行模式。</p><dl><div><dt>连接状态</dt><dd id="system-api-state">检测中</dd></div><div><dt>服务版本</dt><dd id="system-version">—</dd></div><div><dt>任务模式</dt><dd id="system-worker">—</dd></div></dl></section>
+              <section class="settings-card"><div class="settings-icon">规</div><h3>核算规则</h3><p>计算结果由后端规则引擎生成，前端不提交金额。</p><div class="version-block"><span class="status-tag status-success">当前生效</span><b id="system-rule-version">—</b><small id="system-form-count">—</small></div></section>
+              <section class="settings-card"><div class="settings-icon">识</div><h3>表单识别</h3><p>Excel 本地提取；Excel 截图由本地 OCR 识别，无法确认的字段进入人工核对。</p><dl><div><dt>图片识别</dt><dd id="system-image-mode">—</dd></div><div><dt>OCR 引擎</dt><dd id="system-image-model">—</dd></div><div><dt>处理方式</dt><dd>本地识别</dd></div><div><dt>审核鉴权</dt><dd id="system-reviewer-auth">—</dd></div></dl></section>
+            </div>
+            <section class="admin-batch-card">
+              <div class="card-heading table-heading"><div><p class="eyebrow">管理员</p><h3>批次管理</h3></div><span class="status-tag status-neutral" id="admin-session-tag">未登录</span></div>
+              <form class="admin-login-form" id="admin-login-form">
+                <label><span>管理员口令</span><input id="admin-password" type="password" autocomplete="current-password" placeholder="请输入管理员口令" required /><button type="button" class="password-toggle" data-toggle-password="admin-password" aria-pressed="false">显示</button></label>
+                <button class="primary-button" type="submit">管理员登录</button>
+                <p id="admin-login-hint">登录后可直接删除批次。</p>
+              </form>
+              <div id="admin-batch-panel" hidden>
+                <div class="admin-batch-toolbar"><p>删除批次会同时清理上传附件、识别结果、核算记录和导出文件。</p><button class="secondary-button" type="button" data-action="admin-logout">退出管理员</button></div>
+                <div class="batch-table-wrap"><table class="batch-table admin-batch-table"><thead><tr><th>批次 / 项目负责人</th><th>结算月份</th><th>状态</th><th>附件</th><th>更新时间</th><th>操作</th></tr></thead><tbody id="admin-batch-body"></tbody></table><div id="admin-batch-empty" class="empty-state table-empty"><span>批</span><h3>暂无批次</h3><p>当前没有可管理的批次。</p></div></div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </main>
+    </div>
+    <dialog class="reviewer-login-dialog" id="reviewer-login-dialog">
+      <div class="reviewer-login-heading"><span>审</span><div><p>管理员验证</p><h2>进入审核员版本</h2></div><button type="button" data-action="reviewer-login-close" aria-label="关闭">×</button></div>
+      <p class="reviewer-login-description">输入管理员口令后，本标签页将切换到审核工作台。会话关闭标签页后失效。</p>
+      <form id="reviewer-login-form">
+        <label><span>管理员口令</span><input id="reviewer-admin-password" type="password" autocomplete="current-password" placeholder="请输入管理员口令" required /><button type="button" class="password-toggle" data-toggle-password="reviewer-admin-password" aria-pressed="false">显示</button></label>
+        <p class="reviewer-login-error" id="reviewer-login-error" role="alert" hidden></p>
+        <div class="reviewer-login-actions"><button class="secondary-button" type="button" data-action="reviewer-login-close">取消</button><button class="primary-button" type="submit">验证并进入</button></div>
+      </form>
+    </dialog>
+    <dialog class="reviewer-login-dialog" id="final-amount-dialog" aria-labelledby="final-amount-title">
+      <div class="reviewer-login-heading"><h2 id="final-amount-title">修改终审核定金额</h2></div>
+      <form id="final-amount-form">
+        <p id="final-amount-name"></p>
+        <label><span>核定金额（元）</span><input id="final-amount-value" type="number" min="0" step="0.01" required /></label>
+        <label><span>调整原因（选填）</span><input id="final-amount-reason" type="text" maxlength="500" /></label>
+        <p>本次修改保存为新的核算记录，已有历史文件不变。</p>
+        <div class="reviewer-login-actions"><button id="final-amount-cancel" class="secondary-button" type="button">取消</button><button id="final-amount-save" class="primary-button" type="submit">保存调整</button></div>
+      </form>
+    </dialog>
+    <dialog id="meeting-evidence-dialog" class="meeting-evidence-dialog" aria-labelledby="meeting-evidence-title"><header><h2 id="meeting-evidence-title">表单和证明</h2><button class="primary-button" id="close-meeting-evidence" type="button">返回奖金核算表</button></header><iframe id="meeting-evidence-frame" title="申报表单和证明附件"></iframe></dialog>
+    <dialog id="meeting-cells-dialog" class="reviewer-login-dialog" aria-labelledby="meeting-cells-title"><form id="meeting-cells-form"><h2 id="meeting-cells-title">会议数据</h2><p>其他金额计入应发，留空恢复默认；应发留空恢复计算，填写金额（含0）后以该金额为准；实发留空跟随应发。修改原因自动追加会议记录。</p><label id="meeting-total-label"><span>应发（元）</span><input id="meeting-cell-total" type="number" min="0" step="0.01" /></label><label><span>其他（元）</span><input id="meeting-cell-other" type="number" step="0.01" /></label><label><span>实发（元）</span><input id="meeting-cell-actual" type="number" min="0" step="0.01" /></label><label><span>修改原因（选填）</span><input id="meeting-cell-reason" maxlength="500" /></label><div class="reviewer-login-actions"><button type="button" class="secondary-button" id="meeting-cells-cancel">取消</button><button type="submit" class="primary-button" id="meeting-cells-save">保存会议数据</button></div></form></dialog>
+    <dialog id="supplemental-row-dialog" class="reviewer-login-dialog" aria-labelledby="supplemental-row-title"><form id="supplemental-row-form"><h2 id="supplemental-row-title">新增会议条目</h2><p>新增条目排在项目之后，其他金额计入应发合计。保存后需重新确认会议结果。</p><label><span>条目名称</span><input id="supplemental-label" maxlength="200" required /></label><label><span>其他金额（元）</span><input id="supplemental-other" type="number" min="0" step="0.01" required /></label><label><span>备注</span><textarea id="supplemental-remark" maxlength="5000"></textarea></label><label><span>表单和证明（XLSX、DOCX、PDF、JPG、PNG，可多选）</span><input id="supplemental-files" type="file" accept=".xlsx,.docx,.pdf,.jpg,.jpeg,.png" multiple /></label><p id="supplemental-existing-files"></p><div class="reviewer-login-actions"><button id="supplemental-cancel" type="button" class="secondary-button">取消</button><button id="supplemental-save" type="submit" class="primary-button">保存会议条目</button></div></form></dialog>
+    <dialog id="supplemental-files-dialog" class="reviewer-login-dialog" aria-labelledby="supplemental-files-title"><h2 id="supplemental-files-title">证明附件</h2><div id="supplemental-files-list"></div><div class="reviewer-login-actions"><button id="supplemental-files-close" type="button" class="secondary-button">返回会议表</button></div></dialog>
+    <div class="toast" id="app-toast" role="status" hidden><span>✓</span><p id="toast-text"></p></div>
+    <script src="./api-client.js?v=20261029-sync-077"></script>
+    <script src="./meeting-ui.js?v=20261029-meeting"></script>
+    <script src="./app.js?v=20261029-sync-077"></script>
+  </body>
+</html>

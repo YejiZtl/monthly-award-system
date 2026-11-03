@@ -1,0 +1,7 @@
+0.7.1 2026-10-21
+Backend:151 passed,5 subtests passed,2 dependency deprecation warnings.
+Frontend:19 passed.
+9 latest template downloads: identification and cleared examples verified; Q formula preserved.
+Browser: expandable notes, append/save/collapse, optional adjustment reason and dialog title verified on isolated localhost8012.
+Package: allowlisted source only; hashes and ZIP integrity checked by builder.
+Production and Linux upgrade script not executed.
